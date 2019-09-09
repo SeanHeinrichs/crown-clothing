@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import './App.css';
@@ -14,6 +14,8 @@ import { setCurrentUser } from './redux/user/user.actions';
 class App extends React.Component {
   
   unsubscribeFromAuth = null;
+
+  // User Authentication via Firebase
 
   componentDidMount() {
     const {setCurrentUser} = this.props;
@@ -46,15 +48,32 @@ class App extends React.Component {
       <Switch>
         <Route exact path='/' component={HomePage}/>
         <Route path='/shop' component={ShopPage}/>
-        <Route path='/signup' component={SignInAndSignUpPage} />
+        {/* Redirects user once they sign in */}
+        <Route 
+          exact 
+          path='/signin' 
+          render={() => this.props.currentUser ? (
+            <Redirect to='/' />
+          ) : (
+            <SignInAndSignUpPage />
+          ) 
+        } 
+      />
       </Switch>
     </div>
     );
   }
 }
 
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect( 
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
