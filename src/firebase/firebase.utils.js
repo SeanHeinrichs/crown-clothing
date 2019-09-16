@@ -1,5 +1,4 @@
 import firebase from 'firebase/app';
-import * as apiKey from './apiKey';
 import 'firebase/firestore';
 import 'firebase/auth';
 
